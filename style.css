@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #a0302d;
+    background-color: #ff0000;
 }
 
 #iniciarjogo {
@@ -21,7 +21,7 @@ body {
 }
 
 #iniciarjogo h1 {
-    color: #FFF;
+    color: #000;
     font-size: 50px;
 }
 
@@ -54,7 +54,7 @@ body {
 }
 
 .sumir {
-    animation: sumir .9s forwards;
+    animation: sumir .5s forwards;
 }
 
 @keyframes aumentar {
@@ -112,4 +112,12 @@ form #entrarsala {
     background-color: black;
     color: #FFF;
     border: 1px solid #FFF;
+}
+
+canvas {
+    width: 1000px;
+    height: 500px;
+    background-color: rgb(0, 0, 0);
+    display: none;
+    margin: 100px auto;
 }
