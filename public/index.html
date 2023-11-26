@@ -16,18 +16,9 @@
 
         <h1>Iniciar Jogo</h1>
 
-        <img src="img/play.png" alt="play" id="play" onclick="play()">
+        <img src="img/play.png" alt="play" id="play">
 
         <form>
-
-            <div>
-                <label for="tipo">Tipo de Jogo</label>
-                <select name="tipo" id="tipo">
-                    <option value="single">Single Player</option>
-                    <option value="v1">1V1</option>
-                </select> 
-
-            </div>
 
             <div id="vs">
 
@@ -72,28 +63,5 @@
     <canvas id="canvas"></canvas>
 
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
-    <script>
-        const socket = io('http://localhost:3333/');
-
-        function gerarStringAleatoria(tamanho) {
-            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let resultado = '';
-            for (let i = 0; i < tamanho; i++) {
-            const indiceAleatorio = Math.floor(Math.random() * caracteres.length);
-            resultado += caracteres.charAt(indiceAleatorio);
-            }
-            return resultado;
-        }
-
-        socket.on('msg', (msg) => {
-            alert(msg);
-        });
-
-        document.getElementById("criarcodigo").addEventListener('click', () => {
-            document.getElementById("iniciarjogo").classList.add("sumir");
-            document.getElementById("salacriada").style.display = "block";
-            document.querySelector("#salacriada #cd").innerHTML = gerarStringAleatoria(5);
-        })
-    </script>
 </body>
 </html>

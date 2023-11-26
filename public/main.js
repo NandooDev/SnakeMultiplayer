@@ -1,4 +1,50 @@
-let select = document.getElementById('tipo');
+const socket = io('http://localhost:3333/');
+
+// CODIGO DA SALA QUE FOR CRIADA
+function gerarStringAleatoria(tamanho) {
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let resultado = '';
+    for (let i = 0; i < tamanho; i++) {
+    const indiceAleatorio = Math.floor(Math.random() * caracteres.length);
+    resultado += caracteres.charAt(indiceAleatorio);
+    }
+    return resultado;
+}
+
+document.getElementById("criarcodigo").addEventListener('click', () => {
+    let stringAle = gerarStringAleatoria(5);
+    document.getElementById("iniciarjogo").classList.add("sumir");
+    document.getElementById("salacriada").style.display = "block";
+    document.querySelector("#salacriada #cd").innerHTML = stringAle;
+    socket.emit('codSala', stringAle);
+})
+
+// USUARIO USOU CÓDIGO
+let codigoCriadoInimigo = [];
+socket.on('codSala', (cod) => {
+    codigoCriadoInimigo.push(cod);
+    console.log(cod);
+})
+
+document.getElementById('play').addEventListener('click', () => {
+    let codigoDigi = document.getElementById('entrarsala').value;
+    
+    if(codigoDigi === codigoCriadoInimigo[codigoCriadoInimigo.length - 1]) {
+        socket.emit('go');
+    }
+})
+
+socket.on('go', () => {
+    play();
+    document.getElementById('salacriada').style.display = 'none';
+    document.querySelector('canvas').style.display = 'block';
+})
+
+socket.on('stop', (msg) => {
+    alert(msg);
+    clearInterval(jogo);
+})
+
 var corCabeca = document.querySelector("#corcabeca");
 var corCorpo = document.querySelector("#corcorpo");
 
@@ -17,16 +63,6 @@ function play() {
         corCorpo = corCorpo.value;
     }
 };
-
-select.addEventListener('change', function(){
-    
-    if(select.value == "single") {
-        document.getElementById('vs').style.display = "none";
-    } else {
-        document.getElementById('vs').style.display = "flex";
-    }
-
-});
 
 const canvas = document.querySelector("canvas");
 var ctx = canvas.getContext('2d');
@@ -122,14 +158,12 @@ function game() {
     cobra.unshift(novaCabeca);
 
     if(x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
-        alert("Bateu Na Parede! Game Over!");
-        clearInterval(jogo);
+        socket.emit('stop');
     }
 
     for(let i = 1; i < cobra.length; i++) {        
         if(x === cobra[i].x && y === cobra[i].y) {
-            alert("Você bateu no seu corpo! Game Over!");
-            clearInterval(jogo);
+            socket.emit('stop');
         }
     }
 
