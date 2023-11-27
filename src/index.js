@@ -45,6 +45,6 @@ io.on('connection', (client) => {
     })
 });
 
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, '0.0.0.0', () => {
     console.log(`Conexao feita com sucesso na porta ${PORT}`);
 });

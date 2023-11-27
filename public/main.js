@@ -1,4 +1,4 @@
-const socket = io('http://localhost:3333/');
+const socket = io('http://192.168.0.11:3333/');
 
 // CODIGO DA SALA QUE FOR CRIADA
 function gerarStringAleatoria(tamanho) {
@@ -44,6 +44,7 @@ socket.on('stop', (msg) => {
     alert(msg);
     clearInterval(jogo);
 })
+
 
 var corCabeca = document.querySelector("#corcabeca");
 var corCorpo = document.querySelector("#corcorpo");
@@ -169,4 +170,4 @@ function game() {
 
 }
 
-const jogo = setInterval(game, 100)
+const jogo = setInterval(game, 100);
