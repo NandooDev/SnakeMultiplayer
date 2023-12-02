@@ -39,6 +39,24 @@ io.on('connection', (client) => {
         }
     })
 
+    client.on('comida', (comida) => {
+        if(comida == "macaco") {
+            users.forEach(user => {
+                user.emit('comida', comida);
+            });
+        }else if(comida == "anao" || comida == "gigante") {
+            users.forEach(user => {
+                if(user == client) {
+                    console.log("nao é esse");
+                } else {
+                    user.emit('comida', comida);
+                }
+            });
+        }else if(comida == "cores") {
+            client.emit('comida', comida);
+        }
+    })
+
     client.on('disconnect', () => {
         users.splice(users.indexOf(client), 1);
         console.log(`Usuário desconectado - ID = ${client.id}`);

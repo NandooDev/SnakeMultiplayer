@@ -1,4 +1,4 @@
-const socket = io('http://192.168.0.11:3333/');
+const socket = io('http://10.0.0.107:3333/');
 
 // CODIGO DA SALA QUE FOR CRIADA
 function gerarStringAleatoria(tamanho) {
@@ -43,9 +43,32 @@ socket.on('go', () => {
 socket.on('stop', (msg) => {
     alert(msg);
     clearInterval(jogo);
+    location.reload();
 })
 
+socket.on('comida', (comida) => {
+    if(comida == "macaco") {
+        alert("Hehe, alguém comeu o Macaco não foi kkkkk GAME OVER para ambos!");
+        clearInterval(jogo);
+        location.reload();
+    }
+    if(comida == "anao") {
+        document.querySelector("canvas").style.width = "600px";
+        document.querySelector("canvas").style.height = "300px";
+    }
+    if(comida == "gigante") {
+        document.querySelector("canvas").style.width = "1200px";
+        document.querySelector("canvas").style.height = "600px";
+    }
+    if(comida == "cores") {
+    let listaCores = ["#8a2be2", "#008b8b", "#ffa500", "#08ff85", "#00ff00", "#120a8f", "#000000", "#000000", "#000000", "#ebc83a", "#1b66ff", "#5e2f46", "#9dffff"];
+        let corAle = Math.floor(Math.random() * listaCores.length);
+        corCabeca = corCabeca.value = listaCores[corAle];
+        corCorpo = corCorpo.value = listaCores[corAle];
+    }
+})
 
+var cont = 0;
 var corCabeca = document.querySelector("#corcabeca");
 var corCorpo = document.querySelector("#corcorpo");
 
@@ -108,6 +131,20 @@ function seta(e) {
 
 function game() {
     
+    cont++;
+    if(cont == 500) {
+        listaComidas.push("img/macaco.jpg");
+    }
+    if(cont == 200) {
+        listaComidas.push("img/anao.png");
+    }
+    if(cont == 200) {
+        listaComidas.push("img/gigante.png");
+    }
+    if(cont == 100) {
+        listaComidas.push("img/cores.png");
+    }
+    
     let comidaAlea = new Image()
     comidaAlea.src = listaComidas[comidaAleatoria];
     comidaAlea.onload = () => {
@@ -143,6 +180,19 @@ function game() {
     direAnterior = dire;
     
     if(x == comida.x && y == comida.y) {
+        if(listaComidas[comidaAleatoria] == "img/macaco.jpg") {
+            socket.emit('comida', "macaco");
+        }
+        if(listaComidas[comidaAleatoria] == "img/anao.png") {
+            socket.emit('comida', "anao");
+        }
+        if(listaComidas[comidaAleatoria] == "img/gigante.png") {
+            socket.emit('comida', "gigante");
+        }
+        if(listaComidas[comidaAleatoria] == "img/cores.png") {
+            socket.emit('comida', "cores");
+        }
+
         comida = {
             x: Math.floor(Math.random() * 10) * 30,
             y: Math.floor(Math.random() * 10) * 10
@@ -170,4 +220,6 @@ function game() {
 
 }
 
-const jogo = setInterval(game, 100);
+var vel = 120;
+
+const jogo = setInterval(game, vel);
