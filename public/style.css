@@ -6,7 +6,7 @@
 }
 
 body {
-    background-image: url(img/cobrabg.webp); 
+    background-image: url(img/bgsnake.png); 
     background-size: cover;
 }
 
@@ -136,6 +136,7 @@ canvas {
     width: 1000px;
     height: 500px;
     background-color: rgb(0, 0, 0);
+    border: 2px dotted white;
     display: none;
     margin: 100px auto;
 }

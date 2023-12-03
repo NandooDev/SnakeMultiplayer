@@ -54,6 +54,14 @@ io.on('connection', (client) => {
             });
         }else if(comida == "cores") {
             client.emit('comida', comida);
+        }else if(comida == "troca") {
+            users.forEach(user => {
+                if(user == client) {
+                    console.log("nao é esse");
+                } else {
+                    user.emit('comida', comida);
+                }
+            });
         }
     })
 

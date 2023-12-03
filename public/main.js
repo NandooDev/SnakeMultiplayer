@@ -61,16 +61,54 @@ socket.on('comida', (comida) => {
         document.querySelector("canvas").style.height = "600px";
     }
     if(comida == "cores") {
-    let listaCores = ["#8a2be2", "#008b8b", "#ffa500", "#08ff85", "#00ff00", "#120a8f", "#000000", "#000000", "#000000", "#ebc83a", "#1b66ff", "#5e2f46", "#9dffff"];
+        let listaCores = [
+            "#8a2be2", "#008b8b", "#ffa500", "#08ff85", "#00ff00", 
+            "#120a8f", "#000000", "#ebc83a", "#1b66ff", "#5e2f46", "#9dffff"
+        ];
         let corAle = Math.floor(Math.random() * listaCores.length);
         corCabeca = corCabeca.value = listaCores[corAle];
         corCorpo = corCorpo.value = listaCores[corAle];
     }
+    if(comida == "troca") {
+        es = "D";
+        di = "E";
+        ci = "B";
+        ba = "C";
+    }
 })
 
+const canvas = document.querySelector("canvas");
+var ctx = canvas.getContext('2d');
+
+var crescimento = 1;
 var cont = 0;
 var corCabeca = document.querySelector("#corcabeca");
 var corCorpo = document.querySelector("#corcorpo");
+
+var dire;
+var direAnterior;
+var es = "E";
+var di = "D";
+var ci = "C";
+var ba = "B";
+
+var comida = {
+    x: Math.floor(Math.random() * 10) * 30,
+    y: Math.floor(Math.random() * 10) * 10
+};
+
+var listaComidas = [
+    "img/maca.png", "img/banana.png", "img/laranja.png", 
+    "img/laranja.png", "img/melancia.png", "img/morango.png", 
+    "img/pera.png", "img/uvas.png"
+];
+var comidaAleatoria = Math.floor(Math.random() * listaComidas.length);
+
+var cobra = [];
+cobra[0] = {
+    x: 0,
+    y: 0
+}
 
 function play() {
     document.getElementById("iniciarjogo").classList.add("sumir");
@@ -88,42 +126,30 @@ function play() {
     }
 };
 
-const canvas = document.querySelector("canvas");
-var ctx = canvas.getContext('2d');
-
-var dire;
-var direAnterior;
-
-var comida = {
-    x: Math.floor(Math.random() * 10) * 30,
-    y: Math.floor(Math.random() * 10) * 10
-};
-
-var listaComidas = ["img/maca.png", "img/banana.png"];
-var comidaAleatoria = Math.floor(Math.random() * listaComidas.length);
-
-var cobra = [];
-cobra[0] = {
-    x: 0,
-    y: 0
-}
-
 document.addEventListener("keydown", seta);
 
 function seta(e) {
 
     switch (e.key) {
-        case "ArrowLeft":            
-            dire = "E"
+        case "ArrowLeft":  
+            if(dire != "D") {
+                dire = es;
+            }     
             break
         case "ArrowRight":        
-            dire = "D"
+            if(dire != "E") {
+                dire = di;
+            }     
             break
         case "ArrowUp":
-            dire = "C"
+            if(dire != "B") {
+                dire = ci;
+            }     
             break
         case "ArrowDown":
-            dire = "B"
+            if(dire != "C") {
+                dire = ba;
+            }     
             break
     }
 
@@ -132,17 +158,24 @@ function seta(e) {
 function game() {
     
     cont++;
-    if(cont == 500) {
-        listaComidas.push("img/macaco.jpg");
-    }
-    if(cont == 200) {
-        listaComidas.push("img/anao.png");
-    }
-    if(cont == 200) {
-        listaComidas.push("img/gigante.png");
-    }
-    if(cont == 100) {
-        listaComidas.push("img/cores.png");
+
+    switch (cont) {
+        case 500: 
+            listaComidas.push("img/macaco.jpg");
+            break
+        case 50:
+            listaComidas.push("img/javali.png");
+            break
+        case 200:
+            listaComidas.push("img/anao.png");
+            listaComidas.push("img/gigante.png");
+            break
+        case 150:
+            listaComidas.push("img/troca.png");
+            break
+        case 100:
+            listaComidas.push("img/cores.png");
+            break
     }
     
     let comidaAlea = new Image()
@@ -166,31 +199,33 @@ function game() {
     var x = cobra[0].x;
     var y = cobra[0].y;
 
-    if(cobra.length == 1) {
-        if (dire == "D") x += 10; 
-        if (dire == "E") x -= 10; 
-        if (dire == "C") y -= 10; 
-        if (dire == "B") y += 10;  
-    } else {
-        if (dire == "D" && direAnterior != "E") x += 10; 
-        if (dire == "E" && direAnterior != "D") x -= 10; 
-        if (dire == "C" && direAnterior != "B") y -= 10; 
-        if (dire == "B" && direAnterior != "C") y += 10;
-    }
-    direAnterior = dire;
+    if (dire == "D") x += 10; 
+    if (dire == "E") x -= 10; 
+    if (dire == "C") y -= 10; 
+    if (dire == "B") y += 10; 
     
     if(x == comida.x && y == comida.y) {
-        if(listaComidas[comidaAleatoria] == "img/macaco.jpg") {
-            socket.emit('comida', "macaco");
-        }
-        if(listaComidas[comidaAleatoria] == "img/anao.png") {
-            socket.emit('comida', "anao");
-        }
-        if(listaComidas[comidaAleatoria] == "img/gigante.png") {
-            socket.emit('comida', "gigante");
-        }
-        if(listaComidas[comidaAleatoria] == "img/cores.png") {
-            socket.emit('comida', "cores");
+        switch (listaComidas[comidaAleatoria]) {
+            case "img/macaco.jpg":
+                socket.emit('comida', "macaco");
+                cobra.pop();
+                break
+            case "img/anao.png":
+                socket.emit('comida', "anao");
+                cobra.pop();
+                break
+            case "img/gigante.png":
+                socket.emit('comida', "gigante");
+                cobra.pop();
+                break
+            case "img/cores.png":
+                socket.emit('comida', "cores");
+                cobra.pop();
+                break
+            case "img/troca.png":
+                socket.emit('comida', "troca");
+                cobra.pop();
+                break                
         }
 
         comida = {
